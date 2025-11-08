@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
-from ..database import db
-from ..schemas import NoteCreate
-from ..auth.routes import get_current_user
+from backend.database import db
+from backend.schemas import NoteCreate
+from backend.auth.routes import get_current_user
+
 from bson import ObjectId
 
 router = APIRouter(prefix="/notes", tags=["notes"])

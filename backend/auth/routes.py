@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, Header
-from ..database import db
-from ..schemas import UserCreate, UserLogin
+from backend.database import db
+from backend.schemas import UserCreate, UserLogin
 from .utils import hash_password, verify_password, create_access_token, decode_access_token
 from bson import ObjectId
 
@@ -14,8 +14,13 @@ def signup(user: UserCreate):
     users = db["users"]
     if users.find_one({"email": user.email}):
         raise HTTPException(status_code=400, detail="Email already exists")
-    user.password = hash_password(user.password)
-    users.insert_one(user)
+    hashed_password = hash_password(user.password)
+    new_user = {
+        "email": user.email,
+        "username": user.username,
+        "password": hashed_password,
+    }
+    users.insert_one(new_user)
     return {"message": "User created successfully"}
 
 @router.post("/login")
@@ -31,12 +36,17 @@ def login(user: UserLogin):
 def get_current_user(Authorization: str = Header(None)):
     if not Authorization:
         raise HTTPException(status_code=401, detail="Not authenticated")
-    token = decode_access_token(token)
+    
+    token = Authorization.split(" ")[1] if " " in Authorization else Authorization
     payload = decode_access_token(token)
+    
     if not payload:
         raise HTTPException(status_code=401, detail="Invalid token")
+    
     user_id = payload.get("user_id")
     user = db["users"].find_one({"_id": ObjectId(user_id)})
+    
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    
     return user
