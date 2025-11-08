@@ -1,10 +1,17 @@
-import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import SignUp from "./pages/SignUp.jsx";
+import Login from "./pages/Login.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 
 const App = () => {
   return (
-    <h1 class="text-3xl font-bold underline">
-    Hello world!
-  </h1>
+   <Router>
+      <Routes>
+        <Route path="/" element={<SignUp/>} />
+        <Route path="/notes" element={<Login/>} />
+        <Route path="/login" element={<Dashboard/>} />
+      </Routes>
+   </Router>
   )
 }
 
