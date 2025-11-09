@@ -39,7 +39,7 @@ function Dashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-900">
       <Navbar />
 
       <div className="max-w-5xl mx-auto mt-10 space-y-8 px-4">
